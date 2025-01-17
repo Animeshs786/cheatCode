@@ -30,7 +30,9 @@ sudo ufw allow 443 (for https)
 
 sudo ufw allow 5001 (for local port value)
 
-sudo chmod -R 777 /home/ubuntu
+//permission command
+sudo chown -R ubuntu:ubuntu /home/ubuntu/triptaktix
+sudo chmod -R 775 /home/ubuntu/triptaktix
 
 sudo mkdir /var/www/cosmic-wedding
 
