@@ -155,6 +155,21 @@ server {
     }
 }
 
+server {
+         listen 85 default_server;
+        listen [::]:85 default_server;
+        root /var/www/html/pmj;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri /index.html;
+        }
+
+}
+
 
 sudo nginx -t (after edit to check status)
 
