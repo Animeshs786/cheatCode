@@ -187,6 +187,9 @@ sudo certbot --nginx -d admin.cosmicwedding.in
 
 sudo certbot renew --dry-run
 
+//find any folder in server
+sudo find / -type d 2>/dev/null | grep -i "pmj"
+
 
 
 
