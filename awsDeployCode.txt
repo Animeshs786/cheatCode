@@ -190,6 +190,14 @@ sudo certbot renew --dry-run
 //find any folder in server
 sudo find / -type d 2>/dev/null | grep -i "pmj"
 
+//slaepare
+nvm install 14
+nvm use 14
+nvm use 14  # Or the Node.js version your project uses
+which pm2
+npm install -g pm2
+
+
 
 
 
