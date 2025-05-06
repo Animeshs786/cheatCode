@@ -18,6 +18,8 @@ pm2 start server.js --name cosmic-wedding
 
 pm2 start npm --name "next-app" -- start (next pm2 start code )
 
+pm2 start "npx next start -p 3007" --name AsteroKashiFrontend
+
 pm2 startup
 
 pm2 save
