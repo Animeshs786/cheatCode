@@ -220,7 +220,8 @@ nvm use 14  # Or the Node.js version your project uses
 which pm2
 npm install -g pm2
 
-
+//timezone on server
+sudo timedatectl set-timezone Asia/Kolkata
 
 
 
