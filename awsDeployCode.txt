@@ -224,6 +224,14 @@ npm install -g pm2
 //timezone on server
 sudo timedatectl set-timezone Asia/Kolkata
 
+//puppteer (pdf making) 
+sudo apt-get update
+sudo apt-get install -y libpangocairo-1.0-0 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxtst6 libnss3 libcups2 libxss1 libxrandr2 libatk1.0-0 libgtk-3-0 libasound2 libgbm-dev
 
+sudo systemctl restart packagekit.service
+sudo systemctl restart systemd-resolved.service
+
+systemctl status packagekit.service
+systemctl status systemd-resolved.service
 
 
