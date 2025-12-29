@@ -1,0 +1,126 @@
+//CI/CD GitHub se EC2 ko SSH se connect karega
+ssh-keygen -t rsa -b 4096 -C "github-cicd"  
+ls ~/.ssh
+cat ~/.ssh/id_rsa.pub
+
+//EC2 me login
+nano /home/ubuntu/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+//set the permision in local
+icacls "C:\Users\Windows 10\.ssh\id_rsa" /inheritance:r
+icacls "C:\Users\Windows 10\.ssh\id_rsa" /grant:r "$($env:USERNAME):(R)"
+
+//connect server from local
+ssh -i "$env:USERPROFILE\.ssh\id_rsa" ubuntu@13.232.199.228
+or
+ssh ubuntu@52.66.202.87
+
+//connect git to server (in server)
+ssh-keygen -t ed25519 -C "ec2-astroremedy"
+cat ~/.ssh/id_ed25519.pub (copy deoploy key and paset setting deploy key in git)
+
+//for check the git and the server connection 
+ssh -T git@github.com  
+
+//Paste karo
+id_rsa.pub
+
+//Agar git initialized nahi hai: And already running project
+git init
+git remote add origin https://github.com/username/repo.git
+git branch -M main
+git pull origin main
+
+//to delete local file to get latest pull
+git reset --hard
+git clean -fd
+git pull origin main
+
+or
+
+# Yeh command chalao – yeh local ko exactly remote main branch jaisa bana dega
+git reset --hard origin/main (first delete Public local folder other overdide)
+
+//Authorized keys open karo (in server)
+nano /home/ubuntu/.ssh/authorized_keys
+
+
+//Local machine par new SSH key banao
+ssh-keygen -t ed25519 -C "github-actions-ec2"
+
+//Public key EC2 me add karo
+type $env:USERPROFILE\.ssh\id_ed25519.pub
+
+//EC2 me paste karo
+nano ~/.ssh/authorized_keys
+
+chmod 600 ~/.ssh/authorized_keys
+
+
+//Private key copy (local)
+type $env:USERPROFILE\.ssh\id_ed25519
+
+//GitHub Secrets me add karo   (GitHub repo → Settings → Secrets → Actions → New secret)
+name: EC2_SSH_KEY
+value: (private key jo copy kiya tha)
+
+//GitHub Actions workflow file
+mkdir -p .github/workflows
+nano .github/workflows/deploy.yml
+
+#yaml file me likho
+name: Deploy to EC2 Meditation App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 52.66.106.247
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/meditation
+            git pull origin main
+            
+            # Sirf tab install karo jab package-lock.json change ho
+            if [ "package-lock.json" -nt "node_modules" ]; then
+              echo "📦 Installing dependencies..."
+              npm ci --production
+            else
+              echo "✅ Dependencies up to date, skipping install"
+            fi
+            
+            pm2 restart Meditation
+
+
+//Commit and push karo
+git add .github/workflows/deploy.yml
+git commit -m "Add GitHub Actions workflow for EC2 deployment"
+git push origin main
+
+//STEP 7: LIVE TEST
+1️⃣ GitHub repo → Actions tab
+2️⃣ Workflow run ho raha hoga
+3️⃣ Logs me ye dikhega
+
+git pull
+npm install
+pm2 restart
+
+👉 Agar green tick ✅ → CI/CD SUCCESS 🎉
