@@ -51,6 +51,58 @@ sudo nano /etc/nginx/sites-available/default (Open nginx file)
 
 server {
     listen 80;
+    server_name admin.astrokashi.in;
+       root /var/www/astroKashi;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri /index.html;  # Serve the React app for any request
+    }
+
+
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8968;  # Proxy API requests to your Node.js app
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        client_max_body_size 200M;
+    }
+
+    location /public/ {
+        proxy_pass http://127.0.0.1:8968/public/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+     # Socket.IO (WebSocket support)
+    location /socket.io/ {
+        proxy_pass http://127.0.0.1:8968;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+
+}
+
+
+server {
+    listen 80;
     server_name 54.253.250.87;  # Replace this with your server's IP
 
     root /var/www/cosmic-wedding;  # Set the root to your React build directory
