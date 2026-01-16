@@ -3,9 +3,13 @@ ssh-keygen -t rsa -b 4096 -C "github-cicd"
 ls ~/.ssh
 cat ~/.ssh/id_rsa.pub
 
-//EC2 me login
+//EC2 me login for aws
 nano /home/ubuntu/.ssh/authorized_keys
 chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+//for digital occean
+echo "PASTE_YOUR_PUBLIC_KEY_HERE" >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 
 //set the permision in local
@@ -24,8 +28,6 @@ cat ~/.ssh/id_ed25519.pub (copy deoploy key and paset setting deploy key in git)
 //for check the git and the server connection 
 ssh -T git@github.com  
 
-//Paste karo
-id_rsa.pub
 
 //Agar git initialized nahi hai: And already running project
 git init
@@ -100,7 +102,7 @@ jobs:
             
             # Sirf tab install karo jab package-lock.json change ho
             if [ "package-lock.json" -nt "node_modules" ]; then
-              echo "📦 Installing dependencies..."
+              echo "Installing dependencies..."
               npm ci --production
             else
               echo "✅ Dependencies up to date, skipping install"
@@ -122,5 +124,6 @@ git push origin main
 git pull
 npm install
 pm2 restart
+
 
 👉 Agar green tick ✅ → CI/CD SUCCESS 🎉
