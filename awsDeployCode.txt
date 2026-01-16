@@ -28,6 +28,8 @@ pm2 startup
 
 pm2 save
 
+sudo find / -type f -iname "*kashi*" 2>/dev/null  // Search any file globaly 
+
 sudo ufw enable
 
 sudo ufw allow 22 (for ssh)
