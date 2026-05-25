@@ -321,3 +321,12 @@ sudo swapon /swapfile
 free -h
 
 
+# Create 2GB swap file
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# Make it permanent (optional)
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
